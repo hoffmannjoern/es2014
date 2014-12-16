@@ -1,0 +1,19 @@
+// http://www.arduino-tutorial.de/2010/06/digital-out/
+
+int ledPin = 13;
+ 
+void setup() {
+// Setze PIN 13 als Ausgabe-PIN
+pinMode(ledPin, OUTPUT);
+}
+ 
+void loop()
+{
+// LED anschalten
+digitalWrite(ledPin, HIGH);
+delay(1000); // 1 sekunde warten
+
+// LED ausschalten
+digitalWrite(ledPin, LOW);
+delay(1000); // 1 sekunde warten
+}

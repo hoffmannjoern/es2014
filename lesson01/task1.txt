@@ -1,0 +1,12 @@
+// http://www.arduino-tutorial.de/2010/06/digital-out/
+
+int ledPin = 13;
+ 
+void setup() {
+pinMode(ledPin, OUTPUT);
+}
+ 
+void loop()
+{
+digitalWrite(ledPin, HIGH);
+}

@@ -1,0 +1,46 @@
+const int ledPin = 6;		// define Pin for LED
+const int buttonPin = 2;	// define Button Pin
+int buttonState = 0; 		// 0 = off, 1 = on // globaler Zustand
+int taster_val = 0;		// value used by function readButtonValue()
+int taster_val_prell = 0;	// value used by function readButtonValue()
+int taster_val_old = 0;
+
+void setup() {
+pinMode(ledPin, OUTPUT);	// define Pin as Output
+pinMode(buttonPin, INPUT);	// define Pin as INPUT
+digitalWrite(ledPin, LOW); 	// set LED to start value
+}
+
+void loop()
+{
+   readButtonValue();
+   if(buttonState == 0)
+   {
+      digitalWrite(ledPin, LOW);
+   } else {
+      digitalWrite(ledPin, HIGH);
+   }
+}
+
+void readButtonValue()
+{
+  taster_val = digitalRead(buttonPin);         	// read button value
+  delay(10);                                   	// 10 millisekunden warten
+  taster_val_prell = digitalRead(buttonPin);    // read button value again to detect if Button is hold
+    
+  if (taster_val == taster_val_prell)           // user hold button longer than 10 ms?
+  {
+    if (taster_val == taster_val_old) {
+      // gleiche zustand -> abbruch
+      return;
+    } else {
+      // alten zustand übernehmen für später
+      taster_val_old = taster_val;
+    }
+    
+    if(taster_val == HIGH)	            	// if button is pressed is out trigger to perform a change action
+    {
+      buttonState = 1 - buttonState;            // toggle button state
+    }
+  }
+}

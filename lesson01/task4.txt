@@ -1,0 +1,42 @@
+const int ledPin = 13;		// define Pin for LED
+const int SliderPin = A2;	// define Slider Pin
+int lastSliderState = 0; 	// 0 = off, 1 = on
+int activeSliderState = 0; 	// 0 = off, 1 = on
+int slider_val = 0;		// value used by function readSliderValue()
+int slider_val_prell = 0;	// value used by function readSliderValue()
+
+void setup() {
+pinMode(ledPin, OUTPUT);	// define Pin as Output
+pinMode(SliderPin, INPUT);	// define Pin as INPUT
+digitalWrite(ledPin, LOW); 	// set LED to start value
+}
+
+void loop()
+{
+   activeSliderState = readSliderValue();
+   if(activeSliderState != lastSliderState)
+   {
+      analogWrite(ledPin, mapSliderValueToLedValue(activeSliderState));
+   }
+}
+
+int readSliderValue()
+{
+  slider_val = digitalRead(SliderPin);         	// read button value
+  delay(100);                                  	// 10 millisekunden warten
+  slider_val_prell = digitalRead(SliderPin);    // read button value again to detect if Button is hold
+  if (slider_val == slider_val_prell)           // user hold button longer than 100 ms?
+  {
+    return slider_val;				// return new value
+  } else {
+    return lastSliderState;			// if no change detect return last value
+  }
+}
+
+int mapSliderValueToLedValue (int sliderValue)
+{
+   sliderValue++;
+   double tmp = sliderValue / 4;
+   int ledValue = round(tmp);
+   return ledValue;
+}

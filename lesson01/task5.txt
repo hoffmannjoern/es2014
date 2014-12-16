@@ -1,0 +1,66 @@
+//Pin connected to ST_CP of 74HC595
+int latchPin = 8;
+//Pin connected to SH_CP of 74HC595
+int clockPin = 12;
+////Pin connected to DS of 74HC595
+int dataPin = 13;
+
+const int ledPin = 6;		// define Pin for LED
+const int SliderPin = A2;	// define Slider Pin
+int lastSliderState = 0; 	// last read value from slider
+int activeSliderState = 0; 	// actual value from slider
+int binaryValue[10] = {
+  0b00111111, // 0
+  0b00000110, // 1
+  0b01011011, // 2
+  0b01001111, // 3
+  0b01100110, // 4
+  0b01101101, // 5
+  0b01111101, // 6
+  0b00000111, // 7
+  0b01111111, // 8
+  0b01101111  // 9
+}; // value is max. 1023 -> 10 Bit (Attention LSBFIRST)
+
+void setup() {
+pinMode(latchPin, OUTPUT);	// define Pin as Output
+pinMode(clockPin, OUTPUT);	// define Pin as Output
+pinMode(dataPin, OUTPUT);	// define Pin as Output
+Serial.begin(9600);
+Serial.println("Begin 7-segment ....");
+}
+
+void loop()
+{
+   activeSliderState = readSliderValue();
+   if(activeSliderState != lastSliderState)
+   {
+      valueTo7SegmentDisplay((int) (((float)activeSliderState / 1024) * 10));
+      
+   }
+}
+
+int readSliderValue()
+{
+  return analogRead(SliderPin);         	        // read button value
+}
+
+void valueTo7SegmentDisplay(int inputValue)
+{
+  if (inputValue < 0 || inputValue > 9) return;
+  
+  Serial.print("valueSegment: ");Serial.println(inputValue);
+  
+  sendValueToDisplay(binaryValue[inputValue]);
+}
+
+void sendValueToDisplay(int inputValue) {
+  //low tells the shift register we're sending new data
+  digitalWrite(latchPin, LOW);
+ 
+  //send the data w/ built in function
+  shiftOut(dataPin, clockPin, MSBFIRST, inputValue);
+ 
+  //tell the register we're done.
+  digitalWrite(latchPin, HIGH);
+}
