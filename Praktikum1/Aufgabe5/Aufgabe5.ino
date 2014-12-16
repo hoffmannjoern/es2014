@@ -31,7 +31,7 @@ class SevenSegmentDisplay {
   private:
     void writeValue(uint_8 value) {
       digitalWrite(latch, LOW); // freeze display (avoid flicking)
-      shiftOut(serial, clock, MSBFIRST, value);
+      shiftOut(serial, clock, LSBFIRST, value);
       digitalWrite(latch, HIGH); // unfreeze
     }
 };
