@@ -1,7 +1,7 @@
-const int sevenSegmentPin = 14;
-const int sevenSegmentClock = 11;
-const int sevenSegmentLatch = 12;
-const int sliderPin = A0;
+const int sevenSegmentPin = 13;
+const int sevenSegmentClock = 12;
+const int sevenSegmentLatch = 8;
+const int sliderPin = A1;
 
 // old compiler...
 typedef unsigned char uint_8;
