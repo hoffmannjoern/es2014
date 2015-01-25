@@ -40,6 +40,27 @@ __Aufgabenstellung:__ Erläutern Sie das Konzept des Interrupt Betriebs. Gehen 
 - __Interrupt-Kontext (Sichern / Wiederherstellen)__
     TO-DO
 
+## Aufgabe 2
+__Aufgabenstellung:__ Erweitern Sie die Lauflichtschaltung um einen High- und einen Low-aktiven Taster an PORTD6 bzw. PORTD7. Geben Sie den Schaltplan der beiden Taster nachfolgend an.
+
+ToDo
+
+
+## Aufgabe 3
+__Aufgabenstellung:__ Lassen Sie das Lauflicht beim Druck auf Taster 1 starten und beim Druck auf Taster 2 stoppen. Implementieren Sie die Funktionen jeweils als eigene ISR.
+
+### Wie wird eine ISR und der AVR-C Bibliothek markiert und realisiert?
+
+ToDo
+
+###  Wie wird der Interrupt Betrieb beim AVR aktiviert.
+
+ToDo
+
+###  Wie wurde die Kommunikation zwischen den beiden ISRs realisiert?
+
+ToDo
+
 ##Lesenswert:
 * [Artikel zu Interrupts: _We interrupt this program to bring you a tutorial on… Arduino interrupts_](http://www.engblaze.com/we-interrupt-this-program-to-bring-you-a-tutorial-on-arduino-interrupts/dg)
 * [Interrupts und die zugehörigen Register](http://www.mikrocontroller.net/articles/AVR-Tutorial:_Interrupts#INT0.2C_INT1_und_die_zugeh.C3.B6rigen_Register)
