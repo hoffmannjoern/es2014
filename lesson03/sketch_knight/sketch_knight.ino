@@ -63,6 +63,7 @@ void inline setupInterrupts() {
   EIMSK |= (1 << INT0); // Enable interrupt on INT0 (Pin 2)
   EIMSK |= (1 << INT1);
   EICRA |= (1 << ISC01); // Trigger interrupt on falling edge
+  EICRA |= (1 << ISC11); // Trigger interrupt on falling edge
   
   // Call watchdog somehow
   // EICRA |= (1 << ISC00);
@@ -152,5 +153,5 @@ ISR(TIMER1_COMPA_vect) {
   
   LED_POS = (KNIGHT_RIDER_LED_POS)((LED_POS + 1) % 6);
   changed = true;  
-  Serial.print("LED to blink: ");Serial.println(LED_POS);
+  Serial.print("LED state to blink: ");Serial.println(LED_POS);
 }
