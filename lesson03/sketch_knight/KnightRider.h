@@ -34,8 +34,8 @@ class KnightRider {
     
   private:
     PinGroupDriver &leds;
-    bool _isRunning;
-    bool _changedState;
+    volatile bool _isRunning;
+    volatile bool _changedState;
     KNIGHT_RIDER_LED_POS LED_POS; // Position of LED Light (volatile?)
 };
 
