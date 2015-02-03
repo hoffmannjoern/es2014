@@ -26,6 +26,10 @@ void PinGroupDriver::setPORT(uint8_t value) {
   PORTD = value ^ getPORTLowActive();
 }
 
+void PinGroupDriver::disableAllPins() {
+  setPORT(0b00000000);
+}
+
 uint8_t PinGroupDriver::check_0_8(uint8_t pin_nr) {
   // check: not lower
   if (pin_nr < 0) pin_nr = 0;
@@ -43,7 +47,7 @@ void PinGroupDriver::setPinLowActive(uint8_t pin_nr) {
   pin_nr = check_0_8(pin_nr);
   
   setPORTLowActive(getPORTLowActive() | (1 << pin_nr));
-  setPORT(0b00000000); // clear all pins
+  disableAllPins(); // clear all pins
 }
 
 void PinGroupDriver::enablePin(uint8_t pin_nr) {  

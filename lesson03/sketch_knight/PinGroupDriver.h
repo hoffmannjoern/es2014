@@ -13,7 +13,7 @@ class PinGroupDriver {
     void setPinLowActive(uint8_t pin_nr);
     void enablePin(uint8_t pin_nr);
     void disablePin(uint8_t pin_nr);
-    
+    void disableAllPins();    
     
   private:
     void setPORT(uint8_t value);

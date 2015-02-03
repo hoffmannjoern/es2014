@@ -2,31 +2,18 @@
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 #include "PinGroupDriver.h"
-
-// Used LED pins
-#define LED_1 7
-#define LED_2 6
-#define LED_3 5
-#define LED_4 4
+#include "KnightRider.h"
 
 // Taster pin
 #define TASTER_PIN 2
 #define TASTER_PIN2 3
 
-enum KNIGHT_RIDER_LED_POS {
-  LED1 = 0,
-  LED2 = 1,
-  LED3 = 2,
-  LED4 = 3,
-  LED5 = 4,
-  LED6 = 5
-};
-
-// states
-volatile boolean KNIGHT_RIDER_ENABLED = false; // to disable knight rider
-volatile KNIGHT_RIDER_LED_POS LED_POS; // Position of LED Light 
+// Classes
 
 PinGroupDriver leds;
+KnightRider knightRider(leds);
+
+// Setup functions
 
 void inline setupTimerInterrupts() {
   cli();
@@ -69,6 +56,8 @@ void inline setupInterrupts() {
   // EICRA |= (1 << ISC00);
 }
 
+// Arduino main functions
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Start program ...");
@@ -76,82 +65,36 @@ void setup() {
   leds.setup();
   leds.setPinLowActive(LED_2);
   leds.setPinLowActive(LED_3);
+  knightRider.setup();
   
   setupInterrupts();
   setupTimerInterrupts();
   setupWatchdog();
 }
 
-boolean changed = false;
 void loop() {
   // Reset watchdog timer
   wdt_reset();
   
-  if (!KNIGHT_RIDER_ENABLED) {
-    return;
-  }
-  
-  // stop to many changes ...
-  if (!changed) {
-    return;
-  } else {
-    changed = false;
-  }
-  
-  KNIGHT_RIDER_LED_POS led_to_disable = LED_POS;
-  KNIGHT_RIDER_LED_POS led_to_enable = (KNIGHT_RIDER_LED_POS) ((LED_POS + 1) % 6);
- 
-  switch(led_to_disable) {
-    case LED1:
-      leds.disablePin(LED_1);
-      break;
-    case LED2:
-    case LED6:
-      leds.disablePin(LED_2);
-      break;
-    case LED3:
-    case LED5:
-      leds.disablePin(LED_3);
-      break;
-    case LED4:
-      leds.disablePin(LED_4);
-      break;
-  }
-  
-  switch(led_to_enable) {
-    case LED1:
-      leds.enablePin(LED_1);
-      break;
-    case LED2:
-    case LED6:
-      leds.enablePin(LED_2);
-      break;
-    case LED3:
-    case LED5:
-      leds.enablePin(LED_3);
-      break;
-    case LED4:
-      leds.enablePin(LED_4);
-      break;
+  if (knightRider.isRunning()) {
+    knightRider.show();
   }
 }
 
+// Interrupt handler
+
 ISR(INT0_vect) {
   Serial.println("Weiter ...");
-  KNIGHT_RIDER_ENABLED = true;
+  knightRider.start();
 }
 
 ISR(INT1_vect) {
   Serial.println("Stop ...");
-  KNIGHT_RIDER_ENABLED = false;
+  knightRider.stop();
 }
 
 ISR(TIMER1_COMPA_vect) {
-  if (! KNIGHT_RIDER_ENABLED) {
-    return;
-  }
-  
-  LED_POS = (KNIGHT_RIDER_LED_POS)((LED_POS + 1) % 6);
-  changed = true;  
-  Serial.print("LED state to blink: ");Serial.println(LED_POS);
+  if (knightRider.isRunning()) {
+    knightRider.nextLED();
+  }  
 }
