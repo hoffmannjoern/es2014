@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/wdt.h>
 #include "PinGroupDriver.h"
 
 // Used LED pins
@@ -45,6 +46,11 @@ void inline setupTimerInterrupts() {
   sei();
 }
 
+void setupWatchdog() {
+  // Set watchdog timer to 4 seconds
+  wdt_enable(WDTO_4S);
+}  
+  
 void inline setupInterrupts() {
   // Set taster input pin with initial value
   pinMode(TASTER_PIN, INPUT);
@@ -55,9 +61,11 @@ void inline setupInterrupts() {
   // Enable interrupts
   sei();
   EIMSK |= (1 << INT0); // Enable interrupt on INT0 (Pin 2)
-  EICRA |= (1 << ISC01); // Trigger interrupt on falling edge
   EIMSK |= (1 << INT1);
-  EICRA |= (1 << ISC11);
+  EICRA |= (1 << ISC01); // Trigger interrupt on falling edge
+  
+  // Call watchdog somehow
+  // EICRA |= (1 << ISC00);
 }
 
 void setup() {
@@ -65,26 +73,29 @@ void setup() {
   Serial.println("Start program ...");
   
   leds.setup();
-  // Bits 6 & 5 are low active
-  leds.setPinLowActive(0b00000000);//(1 << LED_2) | (1 << LED_3));
+  leds.setPinLowActive(LED_2);
+  leds.setPinLowActive(LED_3);
   
   setupInterrupts();
   setupTimerInterrupts();
+  setupWatchdog();
 }
 
 boolean changed = false;
 void loop() {
+  // Reset watchdog timer
+  wdt_reset();
+  
   if (!KNIGHT_RIDER_ENABLED) {
     return;
   }
   
+  // stop to many changes ...
   if (!changed) {
     return;
   } else {
     changed = false;
   }
-  
-  Serial.print("PORT: ");Serial.println(leds.getPORT(), BIN);
   
   KNIGHT_RIDER_LED_POS led_to_disable = LED_POS;
   KNIGHT_RIDER_LED_POS led_to_enable = (KNIGHT_RIDER_LED_POS) ((LED_POS + 1) % 6);
@@ -135,28 +146,11 @@ ISR(INT1_vect) {
 }
 
 ISR(TIMER1_COMPA_vect) {
-  LED_POS = (KNIGHT_RIDER_LED_POS)((LED_POS + 1) % 6);
-  changed = true;
-  
-  Serial.print("LED to blink: ");Serial.println(LED_POS);
-  
-  KNIGHT_RIDER_LED_POS led_to_disable = LED_POS;
-  KNIGHT_RIDER_LED_POS led_to_enable = (KNIGHT_RIDER_LED_POS) ((LED_POS + 1) % 6);
-  Serial.print("LED on: ");
-  switch(led_to_enable) {
-    case LED1:
-      Serial.println((uint8_t) LED_1);
-      break;
-    case LED2:
-    case LED6:
-      Serial.println((uint8_t) LED_2);
-      break;
-    case LED3:
-    case LED5:
-      Serial.println((uint8_t) LED_3);
-      break;
-    case LED4:
-      Serial.println((uint8_t) LED_4);
-      break;
+  if (! KNIGHT_RIDER_ENABLED) {
+    return;
   }
+  
+  LED_POS = (KNIGHT_RIDER_LED_POS)((LED_POS + 1) % 6);
+  changed = true;  
+  Serial.print("LED to blink: ");Serial.println(LED_POS);
 }
