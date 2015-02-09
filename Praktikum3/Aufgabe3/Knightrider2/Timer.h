@@ -58,7 +58,7 @@ class Timer {
 
         void incrementTime() {
             for(size_t i = 0; i < MaxCallbacks; ++i) {
-                if(callbacks[i].callback) {
+                if(callbacks[i].callback && callbacks[i].callback->getTime_ms() != 0) {
                     ++callbacks[i].counter;
                     if(callbacks[i].counter == callbacks[i].callback->getTime_ms()) {
                         callbacks[i].callback->run();
