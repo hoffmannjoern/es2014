@@ -7,7 +7,7 @@
 
 #include <avr/interrupt.h>
 
-Knightrider knightrider(200);
+Knightrider knightrider;
 class KnightriderCallback : public Timer<1>::Callback {
     void run() {
         knightrider.step();
@@ -36,15 +36,11 @@ void setup() {
 
     timer.addCallback(&knightriderCallback);
 
-    led1.turnOff();
-    led2.turnOff();
-    led3.turnOff();
-    led4.turnOff();
-
     knightrider.leds[0] = &led1;
     knightrider.leds[1] = &led2;
     knightrider.leds[2] = &led3;
     knightrider.leds[3] = &led4;
+    knightrider.init();
 
     // setup port D pin 0 and 1 interrupt
     PCICR |= (1 << PCIE2);
