@@ -8,10 +8,10 @@
 
 class Knightrider {
     public:
-        Knightrider(uint16_t delay);
+        Knightrider();
+        void init();
 
         void step();
-        void run();
 
         void pause();
         void resume();
@@ -20,7 +20,6 @@ class Knightrider {
 
     private:
         volatile bool running;
-        uint16_t delay;
 
         size_t currentLed;
         bool secondStage;

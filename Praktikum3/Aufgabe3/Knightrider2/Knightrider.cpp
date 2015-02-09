@@ -1,26 +1,19 @@
 #include "Knightrider.h"
 
-#include <util/delay.h>
+Knightrider::Knightrider() : currentLed(0), running(true), secondStage(false) {}
 
-Knightrider::Knightrider(uint16_t delay) : delay(delay), currentLed(0), running(true), secondStage(false) {}
+void Knightrider::init() {
+    leds[0]->turnOn();
+    leds[1]->turnOff();
+    leds[2]->turnOff();
+    leds[3]->turnOff();
+}
 
 void Knightrider::step() {
     if(running) {
-        size_t currentLed = getCurrentLedIndex();
-
-        leds[currentLed]->turnOn();
-        _delay_ms(delay);
-        leds[currentLed]->turnOff();
-
-        if(running) {
-            proceedLedIndex();
-        }
-    }
-}
-
-void Knightrider::run() {
-    while(true) {
-        step();
+        leds[getCurrentLedIndex()]->turnOff();
+        proceedLedIndex();
+        leds[getCurrentLedIndex()]->turnOn();
     }
 }
 
