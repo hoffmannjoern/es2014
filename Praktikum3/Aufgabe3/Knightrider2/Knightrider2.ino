@@ -48,9 +48,9 @@ void setup() {
     PCMSK2 |= (1 << PCINT17);
 
     // setup timer with 256 divider
-    TCCR2A |= (1 << WGM01); // enable ctc
+    TCCR2B &= 0b00001000;
     TCCR2B |= (1 << CS10) | (1 << CS11) | (0 << CS12); // prescaler 64
-    OCR2A = 250 - 1;
+    OCR2A = 500 - 1;
     TIMSK2 |= 1 << OCIE2A;
 
     // enable interrupts
